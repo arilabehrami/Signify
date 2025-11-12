@@ -8,16 +8,15 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 WebBrowser.maybeCompleteAuthSession();
 
 export default function GoogleLogin() {
-  // Mobile/Web Auth Request
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId: "278737596733-1jsj4ege6no7vkgjs2dg95advu9740fi.apps.googleusercontent.com",
-    responseType: "id_token", // 🔹 Ky është kyç për web
+    responseType: "id_token", 
   });
 
   useEffect(() => {
     if (response?.type === "success") {
       const { id_token } = response.params;
-      if (!id_token) return; // siguron që nuk është undefined
+      if (!id_token) return; 
       const credential = GoogleAuthProvider.credential(id_token);
 
       signInWithCredential(auth, credential)
@@ -35,12 +34,10 @@ export default function GoogleLogin() {
   const handlePress = async () => {
     try {
       if (Platform.OS === "web") {
-        // Për web, përdor signInWithPopup direkt nga Firebase
         const provider = new GoogleAuthProvider();
         const result = await signInWithPopup(auth, provider);
         console.log("User logged in (web):", result.user);
       } else {
-        // Për mobile, përdor expo-auth-session me proxy
         await promptAsync({ useProxy: true });
       }
     } catch (err) {
